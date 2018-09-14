@@ -10,14 +10,12 @@ import (
 	"time"
 )
 
-const ENTRIES_IN_LINE = 5
-const DATE_LAYOUT = "01/02/2006"
 
-type Reader struct {
-	FilePath string
+type Parser struct {
+	FilePaths []string
 }
 
-func read(path string) (*[][]byte, error) {
+func (p *Parser) Read(path string) (*[][]byte, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		logger.Error("Failed to open name file at path:", path, err)
@@ -61,7 +59,7 @@ func read(path string) (*[][]byte, error) {
 	return &lines, nil
 }
 
-func Parse(path string, low bool) (*[]Datum, error) {
+func (p *Parser) Parse(path string, low bool) (*[]Datum, error) {
 	lines, err := read(path)
 	if err != nil {
 		logger.Error("Reading lines from:", path)
@@ -103,7 +101,7 @@ func Parse(path string, low bool) (*[]Datum, error) {
 	return &dats, nil
 }
 
-func createLine(l *[]string) (*Datum, error) {
+func (p *Parser) CreateModel(l *[]string) (*Datum, error) {
 	ll := *l
 	if len(ll) != ENTRIES_IN_LINE {
 		return nil, errors.New("MALFORMED_LINE")
