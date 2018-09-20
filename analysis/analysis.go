@@ -1,53 +1,56 @@
 package analysis
 
 import (
-	"github.com/greenac/finance/csv"
 	"github.com/greenac/finance/json"
+	"github.com/greenac/finance/models"
 	"strings"
 )
 
 const Random = "random"
 
 type Summation map[string]float64
+type bins map[string][]models.CsvModel
 
 type Analyzer struct {
-	Datums *[]csv.Datum
+	Models *models.ModelsByType
 	Groups *json.Group
-	bins   map[string][]csv.Datum
+	bins   bins
 }
 
 func (a *Analyzer) GroupByType() {
-	a.bins = make(map[string][]csv.Datum)
-	for _, dat := range *a.Datums {
-		if dat.Type == "payment" {
-			continue
-		}
+	a.bins = make(map[string][]models.CsvModel)
+	for _, mods := range *a.Models {
+		for _, m := range *mods {
+			if m.TransType() == models.Deposit {
+				continue
+			}
 
-		has := false
-		for group, entries := range *a.Groups {
-			for _, ent := range entries {
-				if strings.Contains(strings.ToLower(dat.Description), strings.ToLower(ent)) {
-					a.add(dat, group)
-					has = true
+			has := false
+			for group, entries := range *a.Groups {
+				for _, ent := range entries {
+					if strings.Contains(strings.ToLower(m.Desc()), strings.ToLower(ent)) {
+						a.add(m, group)
+						has = true
+					}
 				}
 			}
-		}
 
-		if !has {
-			a.add(dat, Random)
+			if !has {
+				a.add(m, Random)
+			}
 		}
 	}
 }
 
-func (a *Analyzer) add(d csv.Datum, group string) {
-	var dts []csv.Datum
-	if dats, has := a.bins[group]; has {
-		dts = append(dats, d)
+func (a *Analyzer) add(m models.CsvModel, group string) {
+	var mods []models.CsvModel
+	if ms, has := a.bins[group]; has {
+		mods = append(ms, m)
 	} else {
-		dts = []csv.Datum{d}
+		mods = []models.CsvModel{m}
 	}
 
-	a.bins[group] = dts
+	a.bins[group] = mods
 }
 
 func (a *Analyzer) Sum() *Summation {
@@ -55,7 +58,7 @@ func (a *Analyzer) Sum() *Summation {
 	for grp, dts := range a.bins {
 		var t float64 = 0
 		for _, d := range dts {
-			t += d.Amount
+			t += d.DebitedAmount()
 		}
 
 		sum[grp] = t
@@ -64,11 +67,11 @@ func (a *Analyzer) Sum() *Summation {
 	return &sum
 }
 
-func (a *Analyzer) Bin(b string) *[]csv.Datum {
-	dats, has := a.bins[b]
+func (a *Analyzer) Bin(b string) *[]models.CsvModel {
+	mods, has := a.bins[b]
 	if !has {
 		return nil
 	}
 
-	return &dats
+	return &mods
 }
