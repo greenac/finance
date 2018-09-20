@@ -4,8 +4,7 @@ import (
 	"errors"
 	"github.com/greenac/finance/logger"
 	"github.com/greenac/finance/models"
-	)
-
+)
 
 func CreateModel(l *[]string, mn models.Name) (*models.CsvModel, error) {
 	var m models.CsvModel
@@ -24,5 +23,3 @@ func CreateModel(l *[]string, mn models.Name) (*models.CsvModel, error) {
 	m.SetValues(*l)
 	return &m, nil
 }
-
-

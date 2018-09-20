@@ -88,7 +88,7 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 
 					pts = append(pts, txt)
 
-					if j == len(l) - 1 || l[j + 1] == ',' {
+					if j == len(l)-1 || l[j+1] == ',' {
 						pts = append(pts, "")
 					}
 
@@ -106,7 +106,6 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 			mods = append(mods, *ln)
 		}
 	}
-
 
 	return &mods, nil
 }

@@ -32,17 +32,20 @@ func (cc ChaseCredit) SetValues(ents []string) error {
 		return errors.New("INVALID_NUM_ENTRIES")
 	}
 
-	d, err := time.Parse(DateLayout, entries[chaseCreditDateIndex]); if err != nil {
+	d, err := time.Parse(DateLayout, entries[chaseCreditDateIndex])
+	if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing date:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	pDate, err := time.Parse(DateLayout, entries[chaseCreditPostDateIndex]); if err != nil {
+	pDate, err := time.Parse(DateLayout, entries[chaseCreditPostDateIndex])
+	if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing post date:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	amt, err := handleParseFloat(entries[chaseCreditAmountIndex]); if err != nil {
+	amt, err := handleParseFloat(entries[chaseCreditAmountIndex])
+	if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing amount:", err)
 		return errors.New("INVALID_ENTRY")
 	}
@@ -56,15 +59,15 @@ func (cc ChaseCredit) SetValues(ents []string) error {
 	return nil
 }
 
-func (cc ChaseCredit) DebitedAmount () float64 {
+func (cc ChaseCredit) DebitedAmount() float64 {
 	return -cc.Amount
 }
 
-func (cc ChaseCredit) Desc () string {
+func (cc ChaseCredit) Desc() string {
 	return cc.Description
 }
 
-func (cc ChaseCredit) TransType () TransType {
+func (cc ChaseCredit) TransType() TransType {
 	var t TransType
 	tr := strings.ToLower(cc.Type)
 	if tr == "payment" || tr == "return" {

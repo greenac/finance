@@ -8,15 +8,16 @@ import (
 	"strings"
 )
 
-
 func PathsInDir(dp string) ([]string, error) {
 	var paths []string
-	wd, err := os.Getwd(); if err != nil {
+	wd, err := os.Getwd()
+	if err != nil {
 		logger.Error("`PathsInDir` failed to get working dir:", err)
 		return paths, err
 	}
 
-	fs, err := ioutil.ReadDir(filepath.Join(wd, dp)); if err != nil {
+	fs, err := ioutil.ReadDir(filepath.Join(wd, dp))
+	if err != nil {
 		logger.Error("`PathsInDir` reading dir path:", dp, err)
 		return paths, err
 	}

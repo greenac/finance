@@ -7,16 +7,18 @@ import (
 const DateLayout = "01/02/2006"
 
 type Name string
+
 const (
-	ChaseCreditName Name  = "chaseCredit"
-	ChaseDebitName Name  = "chaseDebit"
+	ChaseCreditName  Name = "chaseCredit"
+	ChaseDebitName   Name = "chaseDebit"
 	CapOneCreditName Name = "capOneCredit"
 )
 
 type TransType string
+
 const (
 	Withdrawal TransType = "withdrawal"
-	Deposit TransType = "deposit"
+	Deposit    TransType = "deposit"
 )
 
 type CsvModel interface {
@@ -44,7 +46,8 @@ func cleanEntry(ln []string, num int) []string {
 }
 
 func handleParseFloat(s string) (float64, error) {
-	v, err := strconv.ParseFloat(s, 64); if err != nil {
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
 		if s == "" || s == " " {
 			v = 0
 		} else {

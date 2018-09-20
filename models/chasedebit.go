@@ -46,13 +46,14 @@ func (cd ChaseDebit) SetValues(ent []string) error {
 		return errors.New("INVALID_ENTRY")
 	}
 
-
-	amt, err := handleParseFloat(entries[chaseDebitAmountIndex]); if err != nil {
+	amt, err := handleParseFloat(entries[chaseDebitAmountIndex])
+	if err != nil {
 		logger.Error("`ChaseDebit::SetValues` parsing amount:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	bal, err := handleParseFloat(entries[chaseDebitBalanceIndex]); if err != nil {
+	bal, err := handleParseFloat(entries[chaseDebitBalanceIndex])
+	if err != nil {
 		logger.Error("`ChaseDebit::SetValues` parsing balance:", err)
 		return errors.New("INVALID_ENTRY")
 	}
@@ -78,15 +79,15 @@ func (cd ChaseDebit) SetValues(ent []string) error {
 	return nil
 }
 
-func (cd ChaseDebit) DebitedAmount () float64 {
+func (cd ChaseDebit) DebitedAmount() float64 {
 	return -cd.Amount
 }
 
-func (cd ChaseDebit) Desc () string {
+func (cd ChaseDebit) Desc() string {
 	return cd.Description
 }
 
-func (cd ChaseDebit) TransType () TransType {
+func (cd ChaseDebit) TransType() TransType {
 	var t TransType
 	if strings.ToLower(cd.Details) == "deposit" {
 		t = Deposit

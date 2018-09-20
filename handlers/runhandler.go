@@ -7,10 +7,9 @@ import (
 	"github.com/greenac/finance/models"
 )
 
-
 type RunHandler struct {
-	analyzer *analysis.Analyzer
-	DirPaths models.CSVDirPaths
+	analyzer     *analysis.Analyzer
+	DirPaths     models.CSVDirPaths
 	modelsByType models.ModelsByType
 }
 
@@ -23,7 +22,8 @@ func (rh *RunHandler) Setup() {
 	if rh.analyzer == nil {
 		fps := make(models.CSVFilePaths)
 		for mn, dp := range rh.DirPaths {
-			fns, err := PathsInDir(dp); if err != nil {
+			fns, err := PathsInDir(dp)
+			if err != nil {
 				logger.Warn("`RunHandler::Setup` reading paths in directory:", dp, err)
 				continue
 			}
@@ -34,7 +34,8 @@ func (rh *RunHandler) Setup() {
 		mbt := make(models.ModelsByType)
 		for mn, paths := range fps {
 			parser := Parser{FilePaths: paths}
-			mods, err := parser.Parse(mn, true); if err != nil {
+			mods, err := parser.Parse(mn, true)
+			if err != nil {
 				logger.Warn("`RunHandler::Setup` creating models:", mn, err)
 				continue
 			}
@@ -46,7 +47,7 @@ func (rh *RunHandler) Setup() {
 	}
 }
 
-func (rh *RunHandler) Fill () {
+func (rh *RunHandler) Fill() {
 
 }
 

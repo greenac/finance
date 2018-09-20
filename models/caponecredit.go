@@ -8,21 +8,21 @@ import (
 )
 
 const (
-	capOneCreditStageIndex     = 0
-	capOneCreditDateIndex    = 1
+	capOneCreditStageIndex       = 0
+	capOneCreditDateIndex        = 1
 	capOneCreditPostDateIndex    = 2
-	capOneCreditCardNumIndex    = 3
+	capOneCreditCardNumIndex     = 3
 	capOneCreditDescriptionIndex = 4
-	capOneCreditCategoryIndex        = 5
-	capOneCreditDebitIndex     = 6
-	capOneCreditCreditIndex = 7
+	capOneCreditCategoryIndex    = 5
+	capOneCreditDebitIndex       = 6
+	capOneCreditCreditIndex      = 7
 )
 
 const numOfCapOneCreditEntries = 8
 
 type CapOneCredit struct {
 	Stage       string
-	Date   time.Time
+	Date        time.Time
 	PostDate    time.Time
 	CardNum     int64
 	Description string
@@ -44,22 +44,26 @@ func (cc CapOneCredit) SetValues(ents []string) error {
 		return errors.New("INVALID_ENTRY")
 	}
 
-	pd, err := time.Parse(DateLayout, entries[capOneCreditPostDateIndex]); if err != nil {
+	pd, err := time.Parse(DateLayout, entries[capOneCreditPostDateIndex])
+	if err != nil {
 		logger.Error("`CapOneCredit::SetValues` parsing post date:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	cn, err := strconv.ParseInt(entries[capOneCreditCardNumIndex], 10, 64); if err != nil {
+	cn, err := strconv.ParseInt(entries[capOneCreditCardNumIndex], 10, 64)
+	if err != nil {
 		logger.Error("`CapOneCredit::SetValues` parsing credit card number:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	db, err := handleParseFloat(entries[capOneCreditDebitIndex]); if err != nil {
+	db, err := handleParseFloat(entries[capOneCreditDebitIndex])
+	if err != nil {
 		logger.Error("`CapOneCredit::SetValues` parsing debit:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	cr, err := handleParseFloat(entries[capOneCreditCreditIndex]); if err != nil {
+	cr, err := handleParseFloat(entries[capOneCreditCreditIndex])
+	if err != nil {
 		logger.Error("`CapOneCredit::SetValues` parsing credit:", err, entries)
 		return errors.New("INVALID_ENTRY")
 	}
@@ -76,15 +80,15 @@ func (cc CapOneCredit) SetValues(ents []string) error {
 	return nil
 }
 
-func (cc CapOneCredit) DebitedAmount () float64 {
+func (cc CapOneCredit) DebitedAmount() float64 {
 	return cc.Debit
 }
 
-func (cc CapOneCredit) Desc () string {
+func (cc CapOneCredit) Desc() string {
 	return cc.Description
 }
 
-func (cc CapOneCredit) TransType () TransType {
+func (cc CapOneCredit) TransType() TransType {
 	var t TransType
 	if cc.Debit == 0 {
 		t = Withdrawal

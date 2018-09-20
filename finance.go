@@ -26,7 +26,6 @@ func main() {
 		panic(errors.New("ENV_VARS_NOT_SET"))
 	}
 
-
 	//group, err := json.Read(groupPath)
 	//if err != nil {
 	//	logger.Error("`main` failed to read json file at path:", groupPath)
@@ -53,8 +52,8 @@ func main() {
 	//}
 
 	dps := models.CSVDirPaths{
-		models.ChaseCreditName: chaseCreditPath,
-		models.ChaseDebitName: chaseDebitPath,
+		models.ChaseCreditName:  chaseCreditPath,
+		models.ChaseDebitName:   chaseDebitPath,
 		models.CapOneCreditName: capCreditPath,
 	}
 
