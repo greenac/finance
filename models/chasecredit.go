@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/greenac/finance/logger"
-	"strconv"
+	"strings"
 	"time"
 )
 
@@ -25,26 +25,24 @@ type ChaseCredit struct {
 	Amount      float64
 }
 
-func (cc *ChaseCredit) SetValues(entries []string) error {
+func (cc ChaseCredit) SetValues(ents []string) error {
+	entries := cleanEntry(ents, numCCIndexes)
 	if len(entries) != numCCIndexes {
 		logger.Error("`ChaseCredit::SetValues` Invalid number of entries:", len(entries), "should be:", numCCIndexes)
 		return errors.New("INVALID_NUM_ENTRIES")
 	}
 
-	d, err := time.Parse(DateLayout, entries[chaseCreditDateIndex])
-	if err != nil {
+	d, err := time.Parse(DateLayout, entries[chaseCreditDateIndex]); if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing date:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	pDate, err := time.Parse(DateLayout, entries[chaseCreditPostDateIndex])
-	if err != nil {
+	pDate, err := time.Parse(DateLayout, entries[chaseCreditPostDateIndex]); if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing post date:", err)
 		return errors.New("INVALID_ENTRY")
 	}
 
-	amt, err := strconv.ParseFloat(entries[chaseCreditAmountIndex], 64)
-	if err != nil {
+	amt, err := handleParseFloat(entries[chaseCreditAmountIndex]); if err != nil {
 		logger.Error("`ChaseCredit::SetValues` parsing amount:", err)
 		return errors.New("INVALID_ENTRY")
 	}
@@ -58,6 +56,22 @@ func (cc *ChaseCredit) SetValues(entries []string) error {
 	return nil
 }
 
-func (cc *ChaseCredit) DebitedAmount () float64 {
+func (cc ChaseCredit) DebitedAmount () float64 {
 	return -cc.Amount
+}
+
+func (cc ChaseCredit) Desc () string {
+	return cc.Description
+}
+
+func (cc ChaseCredit) TransType () TransType {
+	var t TransType
+	tr := strings.ToLower(cc.Type)
+	if tr == "payment" || tr == "return" {
+		t = Withdrawal
+	} else {
+		t = Deposit
+	}
+
+	return t
 }
