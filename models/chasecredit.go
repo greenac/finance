@@ -25,7 +25,7 @@ type ChaseCredit struct {
 	Amount      float64
 }
 
-func (cc ChaseCredit) SetValues(ents []string) error {
+func (cc *ChaseCredit) SetValues(ents []string) error {
 	entries := cleanEntry(ents, numCCIndexes)
 	if len(entries) != numCCIndexes {
 		logger.Error("`ChaseCredit::SetValues` Invalid number of entries:", len(entries), "should be:", numCCIndexes)
@@ -59,15 +59,15 @@ func (cc ChaseCredit) SetValues(ents []string) error {
 	return nil
 }
 
-func (cc ChaseCredit) DebitedAmount() float64 {
+func (cc *ChaseCredit) DebitedAmount() float64 {
 	return -cc.Amount
 }
 
-func (cc ChaseCredit) Desc() string {
+func (cc *ChaseCredit) Desc() string {
 	return cc.Description
 }
 
-func (cc ChaseCredit) TransType() TransType {
+func (cc *ChaseCredit) TransType() TransType {
 	var t TransType
 	tr := strings.ToLower(cc.Type)
 	if tr == "payment" || tr == "return" {

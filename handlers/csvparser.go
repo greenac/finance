@@ -109,7 +109,3 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 
 	return &mods, nil
 }
-
-func (p *Parser) Clean() {
-
-}

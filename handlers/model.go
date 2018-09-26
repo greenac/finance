@@ -10,16 +10,17 @@ func CreateModel(l *[]string, mn models.Name) (*models.CsvModel, error) {
 	var m models.CsvModel
 	switch mn {
 	case models.ChaseCreditName:
-		m = models.ChaseCredit{}
+		m = &models.ChaseCredit{}
 	case models.ChaseDebitName:
-		m = models.ChaseDebit{}
+		m = &models.ChaseDebit{}
 	case models.CapOneCreditName:
-		m = models.CapOneCredit{}
+		m = &models.CapOneCredit{}
 	default:
 		logger.Error("`CreateModel` unhandled model name:", mn)
-		panic(errors.New("UNHANDLED_SWITCH_CASE"))
+		return &m, errors.New("UNHANDLED_SWITCH_CASE")
 	}
 
 	m.SetValues(*l)
+
 	return &m, nil
 }
