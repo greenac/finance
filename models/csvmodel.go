@@ -51,7 +51,7 @@ func handleParseFloat(s string) (float64, error) {
 		if s == "" || s == " " {
 			v = 0
 		} else {
-			return v, err
+			return 0, err
 		}
 	}
 

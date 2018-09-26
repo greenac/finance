@@ -13,42 +13,42 @@ type RunHandler struct {
 	modelsByType models.ModelsByType
 }
 
-func (rh *RunHandler) Setup() {
+func (rh *RunHandler) Fill() {
 	if len(rh.DirPaths) == 0 {
 		logger.Error("`RunHandler::Setup` `Paths` not set")
 		panic(errors.New("UNSET_REQUIRED_VAR"))
 	}
 
-	if rh.analyzer == nil {
-		fps := make(models.CSVFilePaths)
-		for mn, dp := range rh.DirPaths {
-			fns, err := PathsInDir(dp)
-			if err != nil {
-				logger.Warn("`RunHandler::Setup` reading paths in directory:", dp, err)
-				continue
-			}
-
-			fps[mn] = fns
+	fps := make(models.CSVFilePaths)
+	for mn, dp := range rh.DirPaths {
+		fns, err := PathsInDir(dp)
+		if err != nil {
+			logger.Warn("`RunHandler::Setup` reading paths in directory:", dp, err)
+			continue
 		}
 
-		mbt := make(models.ModelsByType)
-		for mn, paths := range fps {
-			parser := Parser{FilePaths: paths}
-			mods, err := parser.Parse(mn, true)
-			if err != nil {
-				logger.Warn("`RunHandler::Setup` creating models:", mn, err)
-				continue
-			}
-
-			mbt[mn] = mods
-		}
-
-		rh.modelsByType = mbt
+		fps[mn] = fns
 	}
-}
 
-func (rh *RunHandler) Fill() {
+	mbt := make(models.ModelsByType)
+	for mn, paths := range fps {
+		parser := Parser{FilePaths: paths}
+		mods, err := parser.Parse(mn, true)
+		if err != nil {
+			logger.Warn("`RunHandler::Setup` creating models:", mn, err)
+			continue
+		}
 
+		mbt[mn] = mods
+	}
+
+	rh.modelsByType = mbt
+	for k, mods := range rh.modelsByType {
+		logger.Log("key:", k)
+		for i, m := range *mods {
+			logger.Log(i, m.Desc(), m.DebitedAmount())
+		}
+	}
 }
 
 func (rh *RunHandler) AllModels() *[]models.CsvModel {

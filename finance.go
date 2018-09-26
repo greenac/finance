@@ -58,5 +58,5 @@ func main() {
 	}
 
 	rh := handlers.RunHandler{DirPaths: dps}
-	rh.Setup()
+	rh.Fill()
 }

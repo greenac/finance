@@ -31,7 +31,7 @@ type CapOneCredit struct {
 	Credit      float64
 }
 
-func (cc CapOneCredit) SetValues(ents []string) error {
+func (cc *CapOneCredit) SetValues(ents []string) error {
 	entries := cleanEntry(ents, numOfCapOneCreditEntries)
 	if len(entries) != numOfCapOneCreditEntries {
 		logger.Error("`CapOneCredit::SetValues` Invalid number of entries:", len(entries), "should be:", numOfCapOneCreditEntries, entries)
@@ -80,15 +80,15 @@ func (cc CapOneCredit) SetValues(ents []string) error {
 	return nil
 }
 
-func (cc CapOneCredit) DebitedAmount() float64 {
+func (cc *CapOneCredit) DebitedAmount() float64 {
 	return cc.Debit
 }
 
-func (cc CapOneCredit) Desc() string {
+func (cc *CapOneCredit) Desc() string {
 	return cc.Description
 }
 
-func (cc CapOneCredit) TransType() TransType {
+func (cc *CapOneCredit) TransType() TransType {
 	var t TransType
 	if cc.Debit == 0 {
 		t = Withdrawal

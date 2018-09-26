@@ -30,7 +30,7 @@ type ChaseDebit struct {
 	CheckNumber int64
 }
 
-func (cd ChaseDebit) SetValues(ent []string) error {
+func (cd *ChaseDebit) SetValues(ent []string) error {
 	entries := cleanEntry(ent, numCDEntries)
 	if len(entries) != numCDEntries {
 		logger.Error("`ChaseDebit::SetValues` Invalid number of entries:", len(entries), "should be:", numCDEntries, entries)
@@ -79,15 +79,15 @@ func (cd ChaseDebit) SetValues(ent []string) error {
 	return nil
 }
 
-func (cd ChaseDebit) DebitedAmount() float64 {
+func (cd *ChaseDebit) DebitedAmount() float64 {
 	return -cd.Amount
 }
 
-func (cd ChaseDebit) Desc() string {
+func (cd *ChaseDebit) Desc() string {
 	return cd.Description
 }
 
-func (cd ChaseDebit) TransType() TransType {
+func (cd *ChaseDebit) TransType() TransType {
 	var t TransType
 	if strings.ToLower(cd.Details) == "deposit" {
 		t = Deposit
