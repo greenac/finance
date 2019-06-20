@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/greenac/finance/analysis"
+	"github.com/greenac/finance/json"
 	"github.com/greenac/finance/logger"
 	"github.com/greenac/finance/models"
 )
@@ -11,6 +13,7 @@ type RunHandler struct {
 	analyzer     *analysis.Analyzer
 	DirPaths     models.CSVDirPaths
 	modelsByType models.ModelsByType
+	groups       *json.Group
 }
 
 func (rh *RunHandler) Fill() {
@@ -43,12 +46,49 @@ func (rh *RunHandler) Fill() {
 	}
 
 	rh.modelsByType = mbt
-	for k, mods := range rh.modelsByType {
-		logger.Log("key:", k)
-		for i, m := range *mods {
-			logger.Log(i, m.Desc(), m.DebitedAmount())
+}
+
+func (rh *RunHandler) AddGroups(gp string) error {
+	grp, err := json.Read(gp)
+	if err != nil {
+		logger.Error("`RunHandler::SetupGroups` failed to read from path:", gp)
+		return err
+	}
+
+	rh.groups = grp
+	return nil
+}
+
+func (rh *RunHandler) Analyze() error {
+	if rh.groups == nil {
+		logger.Error("`RunHandler::Analyze` no groups set")
+		return errors.New("UNSET_VAR")
+	}
+
+	if rh.analyzer == nil {
+		a := analysis.Analyzer{Models: &rh.modelsByType, Groups: rh.groups}
+		a.GroupByType()
+
+		s := a.Sum()
+		out := "\n"
+		for k, v := range *s {
+			out += fmt.Sprint(k, ": ", v, "\n")
+		}
+
+		logger.Log(out)
+
+		rnd := a.Bin(analysis.Random)
+		if rnd == nil {
+			logger.Error("No bin with key:", analysis.Random)
+		} else {
+			logger.Log("Number of unknown entries:", len(*rnd))
+			for i, m := range *rnd {
+				logger.Log(i, m.Desc(), m.DebitedAmount())
+			}
 		}
 	}
+
+	return nil
 }
 
 func (rh *RunHandler) AllModels() *[]models.CsvModel {
@@ -60,4 +100,8 @@ func (rh *RunHandler) AllModels() *[]models.CsvModel {
 	}
 
 	return &ms
+}
+
+func (rh *RunHandler) BinDeltaT(days int) {
+
 }
