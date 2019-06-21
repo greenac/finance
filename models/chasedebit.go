@@ -97,3 +97,7 @@ func (cd *ChaseDebit) TransType() TransType {
 
 	return t
 }
+
+func (cd *ChaseDebit) TransDate() time.Time {
+	return cd.PostDate
+}
