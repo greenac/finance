@@ -3,7 +3,9 @@ package analysis
 import (
 	"github.com/greenac/finance/json"
 	"github.com/greenac/finance/models"
+	"github.com/greenac/finance/utils"
 	"strings"
+	"time"
 )
 
 const Random = "random"
@@ -11,14 +13,20 @@ const Random = "random"
 type Summation map[string]float64
 type bins map[string][]models.CsvModel
 
+type binsByDate struct {
+	date time.Time
+	models []models.CsvModel
+}
+
 type Analyzer struct {
 	Models *models.ModelsByType
 	Groups *json.Group
 	bins   bins
+	binsAndDates binsByDate
 }
 
 func (a *Analyzer) GroupByType() {
-	a.bins = make(map[string][]models.CsvModel)
+	a.bins = make(bins)
 	for _, mods := range *a.Models {
 		for _, m := range *mods {
 			if m.TransType() == models.Deposit {
@@ -38,6 +46,22 @@ func (a *Analyzer) GroupByType() {
 			if !has {
 				a.add(m, Random)
 			}
+		}
+	}
+}
+
+func (a *Analyzer) GroupByDate(binSize int) {
+	a.bins = make(bins)
+	binsAndDates := make([]binsByDate, 0)
+
+	for _, mods := range *a.Models {
+		for _, m := range *mods {
+			if m.TransType() == models.Deposit {
+				continue
+			}
+
+			sd := utils.StartOfDay(m.)
+			if ()
 		}
 	}
 }

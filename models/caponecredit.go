@@ -98,3 +98,7 @@ func (cc *CapOneCredit) TransType() TransType {
 
 	return t
 }
+
+func (cc *CapOneCredit) TransDate() time.Time {
+	return cc.PostDate
+}

@@ -78,3 +78,7 @@ func (cc *ChaseCredit) TransType() TransType {
 
 	return t
 }
+
+func (cc *ChaseCredit) TransDate() time.Time {
+	return cc.PostDate
+}

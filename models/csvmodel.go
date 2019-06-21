@@ -2,6 +2,7 @@ package models
 
 import (
 	"strconv"
+	"time"
 )
 
 const DateLayout = "01/02/2006"
@@ -26,6 +27,7 @@ type CsvModel interface {
 	DebitedAmount() float64
 	Desc() string
 	TransType() TransType
+	TransDate() time.Time
 }
 
 type CSVDirPaths map[Name]string
