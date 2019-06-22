@@ -41,7 +41,13 @@ func main() {
 		panic(err)
 	}
 
-	err = rh.Analyze()
+	//err = rh.Analyze()
+	//if err != nil {
+	//	logger.Error("`main` running analysis:", err)
+	//	panic(err)
+	//}
+
+	err = rh.BinDeltaT()
 	if err != nil {
 		logger.Error("`main` running analysis:", err)
 		panic(err)
