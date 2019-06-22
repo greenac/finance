@@ -110,6 +110,5 @@ func (rh *RunHandler) BinDeltaT() error {
 		rh.analyzer = &a
 	}
 
-
 	return nil
 }

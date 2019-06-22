@@ -16,19 +16,19 @@ type Summation map[string]float64
 type bins map[string][]models.CsvModel
 
 type BinsByDate struct {
-	Date time.Time
+	Date   time.Time
 	Models []models.CsvModel
 }
 
 type BinsWithCountByDate struct {
-	Date time.Time
+	Date  time.Time
 	Count int
 }
 
 type Analyzer struct {
-	Models *models.ModelsByType
-	Groups *json.Group
-	bins   bins
+	Models       *models.ModelsByType
+	Groups       *json.Group
+	bins         bins
 	binsAndDates *[]BinsByDate
 }
 
@@ -120,7 +120,6 @@ func (a *Analyzer) BinsCountedByDate() (*[]BinsByDate, error) {
 
 	return a.binsAndDates, nil
 }
-
 
 func (a *Analyzer) add(m models.CsvModel, group string) {
 	var mods []models.CsvModel
