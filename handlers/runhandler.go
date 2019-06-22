@@ -102,6 +102,13 @@ func (rh *RunHandler) AllModels() *[]models.CsvModel {
 	return &ms
 }
 
-func (rh *RunHandler) BinDeltaT(days int) {
+func (rh *RunHandler) BinDeltaT() error {
+	var a analysis.Analyzer
 
+	if rh.analyzer == nil {
+		a = analysis.Analyzer{Models: &rh.modelsByType, Groups: rh.groups}
+		rh.analyzer = &a
+	}
+
+	return nil
 }
