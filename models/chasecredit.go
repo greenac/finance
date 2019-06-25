@@ -8,20 +8,22 @@ import (
 )
 
 const (
-	chaseCreditTypeIndex        = 0
 	chaseCreditDateIndex        = 1
 	chaseCreditPostDateIndex    = 2
 	chaseCreditDescriptionIndex = 3
+	chaseCreditCategoryIndex    = 3
+	chaseCreditTypeIndex        = 0
 	chaseCreditAmountIndex      = 4
 )
 
-const numCCIndexes = 5
+const numCCIndexes = 6
 
 type ChaseCredit struct {
-	Type        string
 	Date        time.Time
 	PostDate    time.Time
 	Description string
+	Category    string
+	Type        string
 	Amount      float64
 }
 
@@ -50,10 +52,11 @@ func (cc *ChaseCredit) SetValues(ents []string) error {
 		return errors.New("INVALID_ENTRY")
 	}
 
-	cc.Type = entries[chaseCreditTypeIndex]
 	cc.Date = d
 	cc.PostDate = pDate
 	cc.Description = entries[chaseCreditDescriptionIndex]
+	cc.Category = entries[chaseCreditCategoryIndex]
+	cc.Type = entries[chaseCreditTypeIndex]
 	cc.Amount = amt
 
 	return nil

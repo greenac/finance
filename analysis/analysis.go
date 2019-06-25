@@ -2,7 +2,6 @@ package analysis
 
 import (
 	"errors"
-	"github.com/greenac/artemis/logger"
 	"github.com/greenac/finance/json"
 	"github.com/greenac/finance/models"
 	"github.com/greenac/finance/utils"
@@ -20,9 +19,28 @@ type BinsByDate struct {
 	Models []models.CsvModel
 }
 
+func (bbd *BinsByDate) totalAmount() float64 {
+	amount := 0.0
+	for _, b := range bbd.Models {
+		a := b.DebitedAmount()
+		if a <= 0 {
+			continue
+		}
+
+		amount += b.DebitedAmount()
+	}
+
+	return amount
+}
+
 type BinsWithCountByDate struct {
 	Date  time.Time
 	Count int
+}
+
+type BinWithAmount struct {
+	Date   time.Time
+	Amount float64
 }
 
 type Analyzer struct {
@@ -74,25 +92,18 @@ func (a *Analyzer) GroupByDate() {
 				continue
 			}
 
-			add := false
-			for i := 0; i < len(binsAndDates); i++ {
+			for i := 0; i < len(binsAndDates); i += 1 {
 				bbd := &(binsAndDates[i])
 				ed := utils.EndOfDay(bbd.Date)
 				if (td.After(bbd.Date) && td.Before(ed)) || td.Equal(bbd.Date) {
 					bbd.Models = append(bbd.Models, m)
-					logger.Log("Appening model", bbd.Date, "td:", td, "end date:", ed, "model count", len(bbd.Models))
 					break
 				}
 
 				if i == len(binsAndDates)-1 {
-					add = true
+					binsAndDates = append(binsAndDates, BinsByDate{utils.StartOfDay(td), []models.CsvModel{m}})
 					break
 				}
-			}
-
-			if add {
-				logger.Error("Adding new model start:", utils.StartOfDay(td), "td:", td)
-				binsAndDates = append(binsAndDates, BinsByDate{utils.StartOfDay(td), []models.CsvModel{m}})
 			}
 		}
 	}
@@ -130,6 +141,15 @@ func (a *Analyzer) add(m models.CsvModel, group string) {
 	}
 
 	a.bins[group] = mods
+}
+
+func (a *Analyzer) BinsWithAmounts() *[]BinWithAmount {
+	bins := make([]BinWithAmount, len(*(a.binsAndDates)))
+	for i, b := range *(a.binsAndDates) {
+		bins[i] = BinWithAmount{Date: b.Date, Amount: b.totalAmount()}
+	}
+
+	return &bins
 }
 
 func (a *Analyzer) Sum() *Summation {

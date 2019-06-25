@@ -104,10 +104,18 @@ func (rh *RunHandler) AllModels() *[]models.CsvModel {
 
 func (rh *RunHandler) BinDeltaT() error {
 	var a analysis.Analyzer
-
 	if rh.analyzer == nil {
 		a = analysis.Analyzer{Models: &rh.modelsByType, Groups: rh.groups}
 		rh.analyzer = &a
+	}
+
+	rh.analyzer.GroupByDate()
+	bwas := rh.analyzer.BinsWithAmounts()
+
+	err := DrawSingleAxisBinWithAmounts(bwas)
+	if err != nil {
+		logger.Error("`RunHandler::BinDeltaT` drawing chart:", err)
+		return err
 	}
 
 	return nil
