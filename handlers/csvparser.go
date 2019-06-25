@@ -9,13 +9,13 @@ import (
 )
 
 type LinesForPath struct {
-	path string
+	path  string
 	Lines *[][]string
 }
 
 type FilePath struct {
 	Entries int
-	Path string
+	Path    string
 }
 
 type Parser struct {
@@ -113,7 +113,6 @@ func (p *Parser) Parse() (*[]LinesForPath, error) {
 
 		lfp = append(lfp, LinesForPath{path.Path, lines})
 	}
-
 
 	return &lfp, nil
 }
