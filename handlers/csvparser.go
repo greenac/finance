@@ -1,15 +1,25 @@
 package handlers
 
 import (
+	"errors"
 	"github.com/greenac/finance/logger"
-	"github.com/greenac/finance/models"
 	"io"
 	"os"
 	"strings"
 )
 
+type LinesForPath struct {
+	path  string
+	Lines *[][]string
+}
+
+type FilePath struct {
+	Entries int
+	Path    string
+}
+
 type Parser struct {
-	FilePaths []string
+	FilePaths []FilePath
 }
 
 func (p *Parser) read(path string) (*[][]byte, error) {
@@ -56,56 +66,53 @@ func (p *Parser) read(path string) (*[][]byte, error) {
 	return &lines, nil
 }
 
-func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, error) {
-	mods := make([]models.CsvModel, 0)
+func (p *Parser) parseFileAtPath(path string) (*[][]byte, error) {
+	lines, err := p.read(path)
+	if err != nil {
+		logger.Error("`Parser::parseFileAtPath` reading lines from:", path, err)
+		return nil, err
+	}
+
+	return lines, nil
+}
+
+func (p *Parser) LinesForFile(path FilePath) (*[][]string, error) {
+	lines := make([][]string, 0)
+	ls, err := p.parseFileAtPath(path.Path)
+	if err != nil {
+		logger.Error("`Parser::LinesForFile` parsing file:", path)
+		return nil, err
+	}
+
+	for i, l := range *ls {
+		// Don't read the header of the csv file
+		if i == 0 {
+			continue
+		}
+
+		pts := strings.Split(string(l), ",")
+		if len(pts) != path.Entries {
+			logger.Error("`Parser::LinesForFile` # line parts:", len(pts), "!= to expected len:", path.Entries)
+			return nil, errors.New("INVALID_CSV_FORMAT")
+		}
+
+		lines = append(lines, pts)
+	}
+
+	return &lines, nil
+}
+
+func (p *Parser) Parse() (*[]LinesForPath, error) {
+	lfp := make([]LinesForPath, 0)
 	for _, path := range p.FilePaths {
-		lines, err := p.read(path)
+		lines, err := p.LinesForFile(path)
 		if err != nil {
 			logger.Error("`Parser::Parse` reading lines from:", path, err)
 			return nil, err
 		}
 
-		for i, l := range *lines {
-			if i == 0 {
-				continue
-			}
-
-			inQuotes := false
-			pts := make([]string, 0)
-			pt := make([]byte, 0)
-			for j, b := range l {
-				if b == '"' {
-					inQuotes = !inQuotes
-				}
-
-				if b == ',' && !inQuotes {
-					var txt string
-					if useLowerCase {
-						txt = strings.ToLower(string(pt))
-					} else {
-						txt = string(pt)
-					}
-
-					pts = append(pts, txt)
-
-					if j == len(l)-1 || l[j+1] == ',' {
-						pts = append(pts, "")
-					}
-
-					pt = []byte{}
-				} else {
-					pt = append(pt, b)
-				}
-			}
-
-			ln, err := CreateModel(&pts, n)
-			if err != nil {
-				continue
-			}
-
-			mods = append(mods, *ln)
-		}
+		lfp = append(lfp, LinesForPath{path.Path, lines})
 	}
 
-	return &mods, nil
+	return &lfp, nil
 }

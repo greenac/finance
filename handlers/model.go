@@ -20,7 +20,15 @@ func CreateModel(l *[]string, mn models.Name) (*models.CsvModel, error) {
 		return &m, errors.New("UNHANDLED_SWITCH_CASE")
 	}
 
-	m.SetValues(*l)
+	err := m.SetValues(*l)
+	if err != nil {
+		logger.Error("`CreateModel` setting value for model:", mn, "line:", *l, "with length:", len(*l))
+		for i, ll := range *l {
+			logger.Warn(i, ll)
+		}
+
+		return nil, err
+	}
 
 	return &m, nil
 }
