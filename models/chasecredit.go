@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	chaseCreditDateIndex        = 1
-	chaseCreditPostDateIndex    = 2
-	chaseCreditDescriptionIndex = 3
+	chaseCreditDateIndex        = 0
+	chaseCreditPostDateIndex    = 1
+	chaseCreditDescriptionIndex = 2
 	chaseCreditCategoryIndex    = 3
-	chaseCreditTypeIndex        = 0
-	chaseCreditAmountIndex      = 4
+	chaseCreditTypeIndex        = 4
+	chaseCreditAmountIndex      = 5
 )
 
 const numCCIndexes = 6

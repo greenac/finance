@@ -118,5 +118,7 @@ func (rh *RunHandler) BinDeltaT() error {
 		return err
 	}
 
+	logger.Log("`RunHandler::BinDeltaT` created and drew bins with amounts")
+
 	return nil
 }

@@ -37,7 +37,7 @@ func DrawSingleAxisBinWithAmounts(bins *[]analysis.BinWithAmount) error {
 	buffer := bytes.NewBuffer([]byte{})
 	err := c.Render(chart.PNG, buffer)
 	if err != nil {
-		logger.Log("`DrawSingleAxisBinWithAmounts` rendering chart:", err)
+		logger.Error("`DrawSingleAxisBinWithAmounts` rendering chart:", err)
 		return err
 	}
 

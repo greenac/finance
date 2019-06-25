@@ -66,6 +66,7 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 		}
 
 		for i, l := range *lines {
+			// Don't read the header of the csv file
 			if i == 0 {
 				continue
 			}
@@ -78,7 +79,7 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 					inQuotes = !inQuotes
 				}
 
-				if b == ',' && !inQuotes {
+				if j == len(l)-1 {
 					var txt string
 					if useLowerCase {
 						txt = strings.ToLower(string(pt))
@@ -86,13 +87,27 @@ func (p *Parser) Parse(n models.Name, useLowerCase bool) (*[]models.CsvModel, er
 						txt = string(pt)
 					}
 
-					pts = append(pts, txt)
-
-					if j == len(l)-1 || l[j+1] == ',' {
-						pts = append(pts, "")
+					if models.CapOneCreditName == n {
+						logger.Log("end of line txt:", txt, len(pt))
 					}
 
+					pts = append(pts, txt)
 					pt = []byte{}
+				} else if b == ',' && !inQuotes {
+						var txt string
+						if useLowerCase {
+							txt = strings.ToLower(string(pt))
+						} else {
+							txt = string(pt)
+						}
+
+						if b == ',' && l[j+1] == ',' {
+							pts = append(pts, "")
+						} else {
+							pts = append(pts, txt)
+						}
+
+						pt = []byte{}
 				} else {
 					pt = append(pt, b)
 				}
