@@ -33,18 +33,15 @@ func (bbd *BinsByDate) totalAmount() float64 {
 	return amount
 }
 
-
 type BinsWithCountByDate struct {
 	Date  time.Time
 	Count int
 }
 
-
 type BinWithAmount struct {
-	Date time.Time
+	Date   time.Time
 	Amount float64
 }
-
 
 type Analyzer struct {
 	Models       *models.ModelsByType
@@ -95,7 +92,7 @@ func (a *Analyzer) GroupByDate() {
 				continue
 			}
 
-			for i := 0; i < len(binsAndDates); i+=1 {
+			for i := 0; i < len(binsAndDates); i += 1 {
 				bbd := &(binsAndDates[i])
 				ed := utils.EndOfDay(bbd.Date)
 				if (td.After(bbd.Date) && td.Before(ed)) || td.Equal(bbd.Date) {

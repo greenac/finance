@@ -11,7 +11,7 @@ const (
 	chaseCreditDateIndex        = 1
 	chaseCreditPostDateIndex    = 2
 	chaseCreditDescriptionIndex = 3
-	chaseCreditCategoryIndex = 3
+	chaseCreditCategoryIndex    = 3
 	chaseCreditTypeIndex        = 0
 	chaseCreditAmountIndex      = 4
 )
@@ -22,7 +22,7 @@ type ChaseCredit struct {
 	Date        time.Time
 	PostDate    time.Time
 	Description string
-	Category string
+	Category    string
 	Type        string
 	Amount      float64
 }

@@ -8,7 +8,6 @@ import (
 	"sort"
 )
 
-
 func DrawSingleAxisBinWithAmounts(bins *[]analysis.BinWithAmount) error {
 	dBins := *(bins)
 
