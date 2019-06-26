@@ -59,3 +59,17 @@ func handleParseFloat(s string) (float64, error) {
 
 	return v, nil
 }
+
+func EntriesForAccount(n Name) int {
+	var ent int
+	switch n {
+	case ChaseCreditName:
+		ent = NumChaseCreditEntries
+	case ChaseDebitName:
+		ent = NumChaseDebitEntries
+	case CapOneCreditName:
+		ent = NumCapOneCreditEntries
+	}
+
+	return ent
+}

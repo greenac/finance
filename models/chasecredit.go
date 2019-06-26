@@ -16,7 +16,7 @@ const (
 	chaseCreditAmountIndex      = 5
 )
 
-const numCCIndexes = 6
+const NumChaseCreditEntries = 6
 
 type ChaseCredit struct {
 	Date        time.Time
@@ -28,9 +28,9 @@ type ChaseCredit struct {
 }
 
 func (cc *ChaseCredit) SetValues(ents []string) error {
-	entries := cleanEntry(ents, numCCIndexes)
-	if len(entries) != numCCIndexes {
-		logger.Error("`ChaseCredit::SetValues` Invalid number of entries:", len(entries), "should be:", numCCIndexes)
+	entries := cleanEntry(ents, NumChaseCreditEntries)
+	if len(entries) != NumChaseCreditEntries {
+		logger.Error("`ChaseCredit::SetValues` Invalid number of entries:", len(entries), "should be:", NumChaseCreditEntries)
 		return errors.New("INVALID_NUM_ENTRIES")
 	}
 

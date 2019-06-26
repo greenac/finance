@@ -18,7 +18,7 @@ const (
 	chaseDebitCheckNumberIndex = 6
 )
 
-const numCDEntries = 7
+const NumChaseDebitEntries = 7
 
 type ChaseDebit struct {
 	Details     string
@@ -31,9 +31,9 @@ type ChaseDebit struct {
 }
 
 func (cd *ChaseDebit) SetValues(ent []string) error {
-	entries := cleanEntry(ent, numCDEntries)
-	if len(entries) != numCDEntries {
-		logger.Error("`ChaseDebit::SetValues` Invalid number of entries:", len(entries), "should be:", numCDEntries, entries)
+	entries := cleanEntry(ent, NumChaseDebitEntries)
+	if len(entries) != NumChaseDebitEntries {
+		logger.Error("`ChaseDebit::SetValues` Invalid number of entries:", len(entries), "should be:", NumChaseDebitEntries, entries)
 		for i, e := range entries {
 			logger.Warn(i, e)
 		}

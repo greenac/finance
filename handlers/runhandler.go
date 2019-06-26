@@ -33,19 +33,31 @@ func (rh *RunHandler) Fill() {
 		fps[mn] = fns
 	}
 
-	mbt := make(models.ModelsByType)
 	for mn, paths := range fps {
-		parser := Parser{FilePaths: paths}
-		mods, err := parser.Parse(mn, true)
+		fps := make([]FilePath, len(paths))
+		for i, p := range paths {
+			fps[i] = FilePath{Entries: models.EntriesForAccount(mn), Path: p}
+		}
+
+		parser := Parser{FilePaths: fps}
+		lns, err := parser.Parse()
 		if err != nil {
 			logger.Warn("`RunHandler::Setup` creating models:", mn, err)
 			continue
 		}
 
-		mbt[mn] = mods
+		for i, l := range *lns {
+			logger.Log(i, l)
+		}
+
+		//mbt[mn] = mods
 	}
 
-	rh.modelsByType = mbt
+	// TODO: Create models here
+	//mbt := make(models.ModelsByType)
+
+
+	//rh.modelsByType = mbt
 }
 
 func (rh *RunHandler) AddGroups(gp string) error {

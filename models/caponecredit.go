@@ -18,7 +18,7 @@ const (
 	capOneCreditCreditIndex      = 7
 )
 
-const numOfCapOneCreditEntries = 8
+const NumCapOneCreditEntries = 8
 
 type CapOneCredit struct {
 	Stage       string
@@ -32,9 +32,9 @@ type CapOneCredit struct {
 }
 
 func (cc *CapOneCredit) SetValues(ents []string) error {
-	entries := cleanEntry(ents, numOfCapOneCreditEntries)
-	if len(entries) != numOfCapOneCreditEntries {
-		logger.Error("`CapOneCredit::SetValues` Invalid number of entries:", len(entries), "should be:", numOfCapOneCreditEntries, entries)
+	entries := cleanEntry(ents, NumCapOneCreditEntries)
+	if len(entries) != NumCapOneCreditEntries {
+		logger.Error("`CapOneCredit::SetValues` Invalid number of entries:", len(entries), "should be:", NumCapOneCreditEntries, entries)
 		return errors.New("INVALID_NUM_ENTRIES")
 	}
 
