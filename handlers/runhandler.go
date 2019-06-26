@@ -56,7 +56,6 @@ func (rh *RunHandler) Fill() {
 	// TODO: Create models here
 	//mbt := make(models.ModelsByType)
 
-
 	//rh.modelsByType = mbt
 }
 

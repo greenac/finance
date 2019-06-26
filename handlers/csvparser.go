@@ -88,13 +88,15 @@ func (p *Parser) LinesForFile(path FilePath) (*[][]string, error) {
 			continue
 		}
 
-		pts := strings.Split(string(l), ",")
-		if len(pts) != path.Entries {
-			logger.Error("`Parser::LinesForFile` has:", len(pts), "entries. ", string(l), "expected:", path.Entries)
+		rpts := strings.Split(string(l), ",")
+		pts := combineQuotes(&rpts)
+
+		if len(*pts) != path.Entries {
+			logger.Error("`Parser::LinesForFile` has:", len(*pts), "entries. ", string(l), "expected:", path.Entries)
 			return nil, errors.New("INVALID_CSV_FORMAT")
 		}
 
-		lines = append(lines, pts)
+		lines = append(lines, *pts)
 	}
 
 	return &lines, nil
@@ -113,4 +115,38 @@ func (p *Parser) Parse() (*[]LinesForPath, error) {
 	}
 
 	return &lfp, nil
+}
+
+func combineQuotes(pts *[]string) *[]string {
+	cpts := make([]string, 0)
+	chk := false
+	cur := ""
+	for _, p := range *pts {
+		if p == "" {
+			cpts = append(cpts, p)
+			continue
+		}
+
+		runes := []rune(p)
+		if chk {
+			// The end of the quoted comma entry
+			if runes[len(runes)-1] == '"' {
+				cur += strings.ReplaceAll(p, "\"", "")
+				cpts = append(cpts, cur)
+				cur = ""
+				chk = false
+			} else {
+				cpts = append(cpts, cur)
+			}
+		} else if strings.Contains(p, "\"") {
+			logger.Error("Setting check to true for part:", p)
+			chk = true
+			cur += strings.ReplaceAll(p, "\"", "")
+		} else {
+			cpts = append(cpts, p)
+		}
+	}
+
+	logger.Log("Cleaned parts:", cpts)
+	return &cpts
 }
