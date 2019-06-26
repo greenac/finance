@@ -54,12 +54,10 @@ func (p *Parser) read(path string) (*[][]byte, error) {
 	for _, b := range data {
 		if b == '\n' {
 			i += 1
+		} else if i == len(lines) {
+			lines = append(lines, []byte{b})
 		} else {
-			if i == len(lines) {
-				lines = append(lines, []byte{b})
-			} else {
-				lines[i] = append(lines[i], b)
-			}
+			lines[i] = append(lines[i], b)
 		}
 	}
 
@@ -92,7 +90,7 @@ func (p *Parser) LinesForFile(path FilePath) (*[][]string, error) {
 
 		pts := strings.Split(string(l), ",")
 		if len(pts) != path.Entries {
-			logger.Error("`Parser::LinesForFile` # line parts:", len(pts), "!= to expected len:", path.Entries)
+			logger.Error("`Parser::LinesForFile` has:", len(pts), "entries. ", string(l), "expected:", path.Entries)
 			return nil, errors.New("INVALID_CSV_FORMAT")
 		}
 

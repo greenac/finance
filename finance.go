@@ -35,11 +35,11 @@ func main() {
 
 	rh := handlers.RunHandler{DirPaths: dps}
 	rh.Fill()
-	err = rh.AddGroups(groupPath)
-	if err != nil {
-		logger.Error("`main` Adding groups:", err)
-		panic(err)
-	}
+	//err = rh.AddGroups(groupPath)
+	//if err != nil {
+	//	logger.Error("`main` Adding groups:", err)
+	//	panic(err)
+	//}
 
 	//err = rh.Analyze()
 	//if err != nil {
@@ -47,9 +47,9 @@ func main() {
 	//	panic(err)
 	//}
 
-	err = rh.BinDeltaT()
-	if err != nil {
-		logger.Error("`main` running analysis:", err)
-		panic(err)
-	}
+	//err = rh.BinDeltaT()
+	//if err != nil {
+	//	logger.Error("`main` running analysis:", err)
+	//	panic(err)
+	//}
 }
