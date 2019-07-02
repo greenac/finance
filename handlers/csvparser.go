@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"github.com/greenac/finance/logger"
+	"github.com/greenac/finance/utils"
 	"io"
 	"os"
 	"strings"
@@ -89,7 +90,7 @@ func (p *Parser) LinesForFile(path FilePath) (*[][]string, error) {
 		}
 
 		rpts := strings.Split(string(l), ",")
-		pts := combineQuotes(&rpts)
+		pts := utils.CombineQuotes(&rpts)
 
 		if len(*pts) != path.Entries {
 			logger.Error("`Parser::LinesForFile` has:", len(*pts), "entries. ", string(l), "expected:", path.Entries)
@@ -115,38 +116,4 @@ func (p *Parser) Parse() (*[]LinesForPath, error) {
 	}
 
 	return &lfp, nil
-}
-
-func combineQuotes(pts *[]string) *[]string {
-	cpts := make([]string, 0)
-	chk := false
-	cur := ""
-	for _, p := range *pts {
-		if p == "" {
-			cpts = append(cpts, p)
-			continue
-		}
-
-		runes := []rune(p)
-		if chk {
-			// The end of the quoted comma entry
-			if runes[len(runes)-1] == '"' {
-				cur += strings.ReplaceAll(p, "\"", "")
-				cpts = append(cpts, cur)
-				cur = ""
-				chk = false
-			} else {
-				cpts = append(cpts, cur)
-			}
-		} else if strings.Contains(p, "\"") {
-			logger.Error("Setting check to true for part:", p)
-			chk = true
-			cur += strings.ReplaceAll(p, "\"", "")
-		} else {
-			cpts = append(cpts, p)
-		}
-	}
-
-	logger.Log("Cleaned parts:", cpts)
-	return &cpts
 }
